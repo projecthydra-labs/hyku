@@ -162,7 +162,7 @@ services:
       - initialize_app
       - db_migrate
     expose:
-      - 3000
+      - 80
 
   workers:
     extends:
