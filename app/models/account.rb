@@ -61,11 +61,12 @@ class Account < ApplicationRecord
 
   # @return [Account] a placeholder account using the default connections configured by the application
   def self.single_tenant_default
-    Account.new do |a|
-      a.build_solr_endpoint
-      a.build_fcrepo_endpoint
-      a.build_redis_endpoint
+    @@single_tenant_default ||= Account.first
+    if @@single_tenant_default.blank?
+      @@single_tenant_default = Account.new(name: 'Single Tenenat', cname: 'single.tenant.default')
+      CreateAccount.new(@@single_tenant_default).save
     end
+    @@single_tenant_default
   end
 
   # @return [Boolean] whether this Account is the global tenant in a multitenant environment
