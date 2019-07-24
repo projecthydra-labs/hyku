@@ -25,4 +25,6 @@ then
     /sbin/setuser app /bin/bash -l -c 'cd /home/app/webapp && rsync -a public/assets-new/ public/assets/'
 fi
 
+/sbin/setuser app /bin/bash -l -c 'cd /home/app/webapp && ./bin/wait-for $POSTGRES_HOST 5432 && ./bin/wait-for $REDIS_HOST 6379 && ./bin/rails db:try_migrate'
+
 exec /usr/sbin/nginx
