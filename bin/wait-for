@@ -1,0 +1,13 @@
+#!/bin/bash -u
+
+HOST=$1
+PORT=$2
+
+while :
+do
+  nc -w 1 -z $HOST $PORT
+  if [[ $? = 0 ]]; then
+    break;
+  fi
+  sleep 1
+done

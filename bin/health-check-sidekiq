@@ -1,0 +1,5 @@
+#!/bin/bash -e
+
+cd $(dirname $0)/..
+
+./bin/rake sidekiq:status

@@ -1,0 +1,76 @@
+solr:
+  # Defaults
+  image:
+   repository: solr
+   tag: 7.6
+  volumeClaimTemplates:
+    storageSize: 20Gi
+zookeeper:
+  persistence:
+    enabled: true
+    accessMode: ReadWriteOnce
+    size: 5Gi
+
+fcrepo:
+  image:
+    repository: cbeer/fcrepo4
+    tag: 4.7
+  storage:
+    size: 8Gi
+
+postgres:
+  image:
+    repository: postgres
+    tag: 11.1
+  storage:
+    size: 8Gi
+
+redis:
+  image:
+    repository: redis
+    tag: 4.0.9
+  storage:
+    size: 1Gi
+
+web:
+  replicas: 2
+
+sidekiq:
+  replicas: 1
+  timeout: 3600
+
+rails:
+  image:
+    repository: hyku/main
+    tag: k8s
+    setupDbTag: k8s
+
+ingress:
+  tlsSecretName: hyku-puma-tls
+  # required from --set parameter
+  # helm upgrade release-name . --set ingress.host=demoapp-puma.${MINIKUBE_IP}.nip.io
+  # host: demoapp-puma.${MINIKUBE_IP}.nip.io
+
+env:
+  configmap:
+    DB_ADAPTER: postgresql
+    POSTGRES_USER: demoapp
+    POSTGRES_DATABASE: hyku
+    RAILS_SERVE_STATIC_FILES: "true"
+    RAILS_LOG_TO_STDOUT: "true"
+    FEDORA_URL: "http://fcrepo:8080/fcrepo/rest"
+    IN_DOCKER: "true"
+    LD_LIBRARY_PATH: "/opt/fits/tools/mediainfo/linux"
+    RAILS_CACHE_STORE_URL: "redis"
+    REDIS_HOST: "redis"
+    SETTINGS__ACTIVE_JOB__QUEUE_ADAPTER: "sidekiq"
+    SETTINGS__FITS_PATH: "/opt/fits/fits.sh"
+    SETTINGS__MULTITENANCY__ADMIN_HOST: "hyku.docker"
+    SETTINGS__MULTITENANCY__ADMIN_ONLY_TENANT_CREATION: "false"
+    SETTINGS__MULTITENANCY__DEFAULT_HOST: "%{tenant}.hyku.docker"
+    SETTINGS__MULTITENANCY__ENABLED: "true"
+
+  secret:
+    POSTGRES_PASSWORD: secret
+    SECRET_KEY_BASE: "123"
+    FCREPO_OPTS: "-Dfcrepo.modeshape.configuration='classpath:/config/file-simple/repository.json' -Dfcrepo.object.directory='/data/objects' -Dfcrepo.binary.directory='/data/binaries'"
