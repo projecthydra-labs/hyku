@@ -56,5 +56,4 @@ unless ENV['DB_ADAPTER'] == 'nulldb'
   end
 
   Rails.application.config.middleware.use AccountElevator
-
 end
